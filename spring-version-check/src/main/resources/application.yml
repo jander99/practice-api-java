@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: ServletVersionApplication
+
+server:
+  port: 8080

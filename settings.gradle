@@ -1,0 +1,4 @@
+rootProject.name = 'practice-api-java'
+
+include 'spring-producer'
+include 'spring-version-check'
