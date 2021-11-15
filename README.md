@@ -28,3 +28,28 @@ The version follows the semver.org Semantic Versioning schema.
 
 Several sub-projects will be devoted to the consumption of the above API by implementing different methods for doing so such as Spring Web and Spring Webflux. 
 
+The consumer should expose an endpoint or cli command to do the following task:
+
+1. Connect to a list of services (mocked via the producer) to discover version information about the application serving the request. 
+2. Record the version information of all the applications for two environments: `qa` and `prod`
+3. Compare the version information and return the following json response
+
+```json
+[{
+  "application": {
+    "name": "{appName}",
+    "versions": {
+      "qa": "{qa-version}",
+      "prod": "{prod-version}"
+    },
+    "action": "{Update Production|None}"
+  }
+}]
+```
+Rules: 
+- If the version deployed to Production is one major version newer than QA, then QA needs to be updated. 
+- If the version deployed to QA is one major version ahead of Production, then Production needs to be updated.
+- If the version deployed to QA is only newer by minor or patch releases, then no update to Production is required, otherwise Production needs to be updated.
+- If the version deployed to Production is only newer by less than five minor releases, then no update is required, otherwise QA needs to be updated.
+
+All version numbers will use [Semantic Versioning](https://semver.org).
