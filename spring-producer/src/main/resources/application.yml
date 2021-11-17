@@ -3,3 +3,6 @@ spring:
     name: VersionProducer
 server:
   port: 8081
+
+application:
+  environments: dev, staging, prod

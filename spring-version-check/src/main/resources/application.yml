@@ -4,3 +4,9 @@ spring:
 
 server:
   port: 8080
+
+application:
+  names: shipping, tax, item, customer, order, payment
+  environments: dev, prod
+  version:
+    serviceUrl: http://localhost:8081/api/{environment}/{appName}/version

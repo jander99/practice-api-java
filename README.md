@@ -19,7 +19,7 @@ The version follows the semver.org Semantic Versioning schema.
 ```json
 {
   "applicationName": "app1",
-  "environment": "qa",
+  "environment": "dev",
   "version": "1.2.3"
 }
 ```
@@ -31,25 +31,42 @@ Several sub-projects will be devoted to the consumption of the above API by impl
 The consumer should expose an endpoint or cli command to do the following task:
 
 1. Connect to a list of services (mocked via the producer) to discover version information about the application serving the request. 
-2. Record the version information of all the applications for two environments: `qa` and `prod`
+2. Record the version information of all the applications for two environments: `dev` and `prod`
 3. Compare the version information and return the following json response
 
 ```json
 [{
   "application": {
     "name": "{appName}",
-    "versions": {
-      "qa": "{qa-version}",
-      "prod": "{prod-version}"
-    },
-    "action": "{Update Production|None}"
+    "versions": [{
+      "environment": "dev",
+      "version": "dev-version"
+      }, 
+      {
+        "environment": "prod",
+        "version": "pr-version"
+      }],
+    "action": "{Update Production|No Action}"
   }
 }]
 ```
 Rules: 
-- If the version deployed to Production is one major version newer than QA, then QA needs to be updated. 
-- If the version deployed to QA is one major version ahead of Production, then Production needs to be updated.
-- If the version deployed to QA is only newer by minor or patch releases, then no update to Production is required, otherwise Production needs to be updated.
-- If the version deployed to Production is only newer by less than five minor releases, then no update is required, otherwise QA needs to be updated.
+- If the version deployed to Production is newer than Dev, then no action is needed. 
+- If the version deployed to Dev is newer than Production, then Production needs to be updated.
+
+Example Acceptance Criteria:
+```gherkin
+Given a Dev version of 1.2.9-SNAPSHOT
+And a Prod version of 1.2.5
+When I compute the action required
+Then I will recommend to "Upgrade Production"
+```
+
+```gherkin
+Given a Dev version of 2.3.11-SNAPSHOT
+And a Prod version of 2.4
+When I compute the action requestion
+Then I was recommend "No Action"
+```
 
 All version numbers will use [Semantic Versioning](https://semver.org).
